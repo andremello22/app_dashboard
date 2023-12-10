@@ -28,5 +28,24 @@ $(document).ready(() => {
          $('#pagina').html(data);
       });
     });
+
+    $('#competencia').on('change', (e)=>{
+           let competencia = $(e.target).val();
+           //console.log(competencia);
+            $.ajax({
+                type: "GET",
+                url: "app.php",
+                data:`competencia=${competencia}`,
+                dataType:'json',
+                success: (dados)=> {
+                    $('#numero_vendas').html(dados.numero_vendas);
+                    $('#total_vendas').html(dados.total_vendas);
+                    console.log(dados.numero_vendas, dados.total_vendas);
+                },
+                console: (erro)=>{
+                    console.log(erro);
+                }
+           });
+    });
 	
 });
