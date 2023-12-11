@@ -31,7 +31,7 @@ $(document).ready(() => {
 
     $('#competencia').on('change', (e)=>{
            let competencia = $(e.target).val();
-           //console.log(competencia);
+           console.log(competencia);
             $.ajax({
                 type: "GET",
                 url: "app.php",
@@ -40,6 +40,7 @@ $(document).ready(() => {
                 success: (dados)=> {
                     $('#numero_vendas').html(dados.numero_vendas);
                     $('#total_vendas').html(dados.total_vendas);
+                    $('#clientes_ativos').html(dados.clientes_ativos);
                     console.log(dados.numero_vendas, dados.total_vendas);
                 },
                 console: (erro)=>{

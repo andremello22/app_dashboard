@@ -5,7 +5,8 @@ class Dashboard{
     public $data_fim;
     public $numero_vendas;
     public $total_vendas;
-    public $clientes_situacao;
+    public $clientes_ativos;
+    public $clientes_inativos;
     public $reclamacoes;
     public $elogio;
     public $sugestao;
@@ -55,21 +56,7 @@ class Bd {
         $this->dashboard = $dashboard;
     }
 
-    public function getClientesAtivo(){
-        $query = 'SELECT *
-        FROM
-            tb_clientes
-            WHERE
-                clientes_ativos = 1';
-
-
-
-        $stmt = $this->conexao->prepare($query);
-        $stmt->bindValue(':data_inicio', $this->dashboard->__get('data_inicio'));
-        $stmt->bindValue(':data_fim', $this->dashboard->__get('data_fim'));
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_OBJ)->clientes_ativos;
-    }
+ 
 
     public function getTotalVendas(){
         $query = 'SELECT SUM(total) AS total_vendas
@@ -102,25 +89,48 @@ class Bd {
     }
 
 
+    public function getClientesAtivos(){
+        $query = 'SELECT COUNT(*) AS cliente_ativo
+        FROM
+            tb_clientes
+            WHERE
+            cliente_ativo = 1';
+
+
+        $stmt = $this->conexao->prepare($query);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ)->cliente_ativo;
+    }
+
+
+
+
 }
 
 //lógica do script
-$competencia = explode('-', $_GET['competencia']);
-$ano = $competencia[0];
-$mes = $competencia[1];
-$dias_do_mes = cal_days_in_month(CAL_GREGORIAN, $mes, $ano);
+
 
 $dashboard = new Dashboard();
 $conexao = new Conexao();
 $bd = new Bd($conexao, $dashboard);
 
+$competencia = explode('-', $_GET['competencia']);
+$ano = $competencia[0];
+$mes = $competencia[1];
+$dias_do_mes = cal_days_in_month(CAL_GREGORIAN, $mes, $ano);
 
 
 $dashboard->__set('data_inicio', $ano.'-'.$mes.'-01');
 $dashboard->__set('data_fim', $ano.'-'.$mes.'-'.$dias_do_mes);
 $dashboard->__set('numero_vendas', $bd->getNumeroVendas());
 $dashboard->__set('total_vendas', $bd->getTotalVendas()); 
-$clientes_ativos = getClientesAtivo();
+$dashboard->__set('clientes_ativos', $bd->getClientesAtivos()); 
+
+
+
+
+
+
 echo json_encode($dashboard);
 
 
