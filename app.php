@@ -102,13 +102,74 @@ class Bd {
         return $stmt->fetch(PDO::FETCH_OBJ)->cliente_ativo;
     }
 
+    public function getClientesInativos(){
+        $query = 'SELECT COUNT(*) AS cliente_ativo
+        FROM
+            tb_clientes
+            WHERE
+            cliente_ativo = 0';
 
+
+        $stmt = $this->conexao->prepare($query);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ)->cliente_ativo;
+    }
+
+    public function getElogios(){
+        $query = 'SELECT COUNT(*) AS tipo_contato
+        FROM
+            tb_contatos
+            WHERE
+            tipo_contato = 1';
+
+
+        $stmt = $this->conexao->prepare($query);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ)->tipo_contato;
+    }
+
+    public function getReclamacoes(){
+        $query = 'SELECT COUNT(*) AS tipo_contato
+        FROM
+            tb_contatos
+            WHERE
+            tipo_contato = 3';
+
+
+        $stmt = $this->conexao->prepare($query);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ)->tipo_contato;
+    }
+
+    public function getSugestoes(){
+        $query = 'SELECT COUNT(*) AS tipo_contato
+        FROM
+            tb_contatos
+            WHERE
+            tipo_contato = 2';
+
+
+        $stmt = $this->conexao->prepare($query);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ)->tipo_contato;
+    }
+
+    public function getTotalDespesas(){
+        $query = 'SELECT SUM(total) AS total_despesas
+        FROM
+            tb_despesas
+            WHERE
+            total > 0';
+
+        $stmt = $this->conexao->prepare($query);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ)->total_despesas;
+    }
 
 
 }
 
 //lógica do script
-
 
 $dashboard = new Dashboard();
 $conexao = new Conexao();
@@ -125,6 +186,13 @@ $dashboard->__set('data_fim', $ano.'-'.$mes.'-'.$dias_do_mes);
 $dashboard->__set('numero_vendas', $bd->getNumeroVendas());
 $dashboard->__set('total_vendas', $bd->getTotalVendas()); 
 $dashboard->__set('clientes_ativos', $bd->getClientesAtivos()); 
+$dashboard->__set('clientes_inativos', $bd->getClientesInativos()); 
+$dashboard->__set('elogio', $bd->getElogios()); 
+$dashboard->__set('reclamacoes', $bd->getReclamacoes()); 
+$dashboard->__set('sugestao', $bd->getSugestoes()); 
+$dashboard->__set('despesa', $bd->getTotalDespesas()); 
+
+
 
 
 
